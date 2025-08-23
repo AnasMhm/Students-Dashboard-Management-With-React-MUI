@@ -13,62 +13,64 @@ import SchoolIcon from "@mui/icons-material/School";
 import BookIcon from "@mui/icons-material/Book";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useAuth } from "../contexts/AuthContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
+
+const stats = [
+  {
+    label: "Students",
+    value: 120,
+    icon: <SchoolIcon sx={{ fontSize: 40, color: "primary.main" }} />,
+  },
+  {
+    label: "Courses",
+    value: 10,
+    icon: <BookIcon sx={{ fontSize: 40, color: "secondary.main" }} />,
+  },
+  {
+    label: "Enrollments",
+    value: 250,
+    icon: <HowToRegIcon sx={{ fontSize: 40, color: "success.main" }} />,
+  },
+  {
+    label: "Completion Rate",
+    value: 85,
+    icon: <CheckCircleIcon sx={{ fontSize: 40, color: "info.main" }} />,
+  },
+];
+
+const newStudents = [
+  {
+    id: "stu_001",
+    name: "Sara Khaled",
+    email: "sara@example.com",
+    phone: "05XXXXXXXX",
+    createdAt: "2025-08-10T10:00:00Z",
+  },
+  {
+    id: "stu_002",
+    name: "Ali Hassan",
+    email: "ali@example.com",
+    phone: "05XXXXXXXX",
+    createdAt: "2025-08-12T11:30:00Z",
+  },
+  {
+    id: "stu_003",
+    name: "Lina Omar",
+    email: "lina@example.com",
+    phone: "05XXXXXXXX",
+    createdAt: "2025-08-14T09:45:00Z",
+  },
+  {
+    id: "stu_004",
+    name: "Khalid Yousef",
+    email: "khalid@example.com",
+    phone: "05XXXXXXXX",
+    createdAt: "2025-08-15T14:20:00Z",
+  },
+];
 export default function Dashboard() {
-  const stats = [
-    {
-      label: "Students",
-      value: 120,
-      icon: <SchoolIcon sx={{ fontSize: 40, color: "primary.main" }} />,
-    },
-    {
-      label: "Courses",
-      value: 10,
-      icon: <BookIcon sx={{ fontSize: 40, color: "secondary.main" }} />,
-    },
-    {
-      label: "Enrollments",
-      value: 250,
-      icon: <HowToRegIcon sx={{ fontSize: 40, color: "success.main" }} />,
-    },
-    {
-      label: "Completion Rate",
-      value: 85,
-      icon: <CheckCircleIcon sx={{ fontSize: 40, color: "info.main" }} />,
-    },
-  ];
-
-  const newStudents = [
-    {
-      id: "stu_001",
-      name: "Sara Khaled",
-      email: "sara@example.com",
-      phone: "05XXXXXXXX",
-      createdAt: "2025-08-10T10:00:00Z",
-    },
-    {
-      id: "stu_002",
-      name: "Ali Hassan",
-      email: "ali@example.com",
-      phone: "05XXXXXXXX",
-      createdAt: "2025-08-12T11:30:00Z",
-    },
-    {
-      id: "stu_003",
-      name: "Lina Omar",
-      email: "lina@example.com",
-      phone: "05XXXXXXXX",
-      createdAt: "2025-08-14T09:45:00Z",
-    },
-    {
-      id: "stu_004",
-      name: "Khalid Yousef",
-      email: "khalid@example.com",
-      phone: "05XXXXXXXX",
-      createdAt: "2025-08-15T14:20:00Z",
-    },
-  ];
-
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={2}>
@@ -109,18 +111,17 @@ export default function Dashboard() {
         ))}
       </Grid>
 
-      {/* Students Table */}
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           New Students
         </Typography>
         <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
           <Table
-  sx={{
-    "& .MuiTableCell-head": { fontSize: "0.95rem", fontWeight: "bold" },
-    "& .MuiTableCell-body": { fontSize: "0.85rem" },
-  }}
->
+            sx={{
+              "& .MuiTableCell-head": { fontSize: "0.95rem", fontWeight: "bold" },
+              "& .MuiTableCell-body": { fontSize: "0.85rem" },
+            }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>ID</TableCell>

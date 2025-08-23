@@ -8,24 +8,24 @@ import Courses from './pages/Courses';
 import Enrollments from './pages/Enrollments';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
-import { darkTheme } from './theme';
 import { ThemeProvider } from '@emotion/react';
+import { useThemeContext } from './contexts/ThemeContext';
 const App = () => {
-  const theme =  darkTheme;
-  const IsLoggedIn = true;
+  const { mode } = useThemeContext()
+  const theme = mode
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={{ theme }}>
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path='/' element={<Dashboard />} />
           <Route path='/students' element={<Students />} />
           <Route path='/courses' element={<Courses />} />
-        <Route path='/enrollments' element={<Enrollments />} />
-        <Route path='/reports' element={<Reports />} />
-        <Route path='/settings' element={<Settings />} />
-      </Route>
-      <Route path="/login" element={<Login />} />
-    </Routes>
+          <Route path='/enrollments' element={<Enrollments />} />
+          <Route path='/reports' element={<Reports />} />
+          <Route path='/settings' element={<Settings />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </ThemeProvider>
   )
 }

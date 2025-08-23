@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 const LoadingSpinner = () => {
   return (
     <Box
@@ -9,7 +9,7 @@ const LoadingSpinner = () => {
         height: "100vh",
       }}
     >
-      <CircularProgress />
+      <CircularProgress size={100} thickness={4} color="secondary" />
     </Box>
   )
 }

@@ -6,36 +6,47 @@ import {
   TextField,
   Typography,
   Paper,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function Login() {
+const Login = () => {
   const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState("");
+  const [pageLoading, setPageLoading] = useState(true);
+  const { login, user, loading } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
-      const isLoggedIn = false;
-      if (isLoggedIn) {
-        navigate("/");
-      }
-      else {
-        setLoading(false);
-      }
-    }, [navigate]);
+    setPageLoading(true);
+    if (user) {
+      navigate("/");
+    }
+    else {
+      setPageLoading(false);
+    }
+    const timer = setTimeout(() => setPageLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, [navigate, user]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (username.trim()) {
-      console.log("Logging in with:", username);
-      // TODO: handle login logic
+      login(username, role);
+      navigate("/");
     }
   };
-  if(loading) {
-    return (
-      <LoadingSpinner />
-    );
-  }
 
+  if (loading || pageLoading) {
+    return <LoadingSpinner />;
+  }
+  if (user) {
+    return null
+  }
   return (
     <Box
       sx={{
@@ -43,7 +54,7 @@ export default function Login() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        bgcolor: "background.default", // uses theme background
+        bgcolor: "background.default"
       }}
     >
       <Container maxWidth="sm">
@@ -53,18 +64,14 @@ export default function Login() {
             p: 4,
             borderRadius: 3,
             textAlign: "center",
-            bgcolor: "background.paper", // paper background from theme
+            bgcolor: "background.paper"
           }}
         >
           <Typography
             sx={{
-              fontSize: {
-                xs: "1.25rem",
-                sm: "1.75rem",
-                md: "2rem",
-              },
+              fontSize: { xs: "1.25rem", sm: "1.75rem", md: "2rem" },
               fontWeight: "bold",
-              color: "text.primary", // theme text color
+              color: "text.primary"
             }}
             gutterBottom
           >
@@ -88,7 +95,25 @@ export default function Login() {
                 },
               }}
             />
-
+            <Typography
+              sx={{
+                fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
+                color: "text.primary"
+              }}
+              gutterBottom
+            >
+              Role
+            </Typography>
+            <RadioGroup
+              row
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              sx={{ mb: 3, justifyContent: "center" }}
+            >
+              <FormControlLabel value="Admin" control={<Radio />} label="Admin" />
+              <FormControlLabel value="Instructor" control={<Radio />} label="Instructor" />
+              <FormControlLabel value="Student" control={<Radio />} label="Student" />
+            </RadioGroup>
             <Button
               type="submit"
               variant="contained"
@@ -99,9 +124,7 @@ export default function Login() {
                 fontWeight: "bold",
                 borderRadius: 2,
                 bgcolor: "primary.main",
-                "&:hover": {
-                  bgcolor: "secondary.main", // hover = orange
-                },
+                "&:hover": { bgcolor: "secondary.main" },
               }}
             >
               Login
@@ -112,3 +135,4 @@ export default function Login() {
     </Box>
   );
 }
+export default Login;

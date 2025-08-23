@@ -1,61 +1,58 @@
-// import { Navigate, Outlet } from "react-router-dom";
-
-// const ProtectedRoute = () => {
-//     const isLoggedIn = true; // Replace with actual authentication logic (context api)
-//     return (
-//         <>
-        
-//             {isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />}
-//         </>
-//     )
-// }
-
-// export default ProtectedRoute
-
-
 import { useEffect, useState } from "react";
-import {
-  Box,
-  CssBaseline,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Divider,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Divider from "@mui/material/Divider";
 import MenuIcon from "@mui/icons-material/Menu";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PeopleIcon from "@mui/icons-material/People";
+import BookIcon from "@mui/icons-material/Book";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { Outlet, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import LoadingSpinner from "./LoadingSpinner";
 
 const drawerWidth = 250;
 
-export default function Dashboard({ username }) {
+export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
+  const { user, loading, logout } = useAuth();
+
   useEffect(() => {
-    const isLoggedIn = true;
-    if (!isLoggedIn) {
+    if (!loading && !user) {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, user, loading]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // Sidebar links
   const navLinks = [
-    { label: "Dashboard", path: "/" },
-    { label: "Students", path: "/students" },
-    { label: "Courses", path: "/courses" },
-    { label: "Enrollments", path: "/enrollments" },
-    { label: "Reports", path: "/reports" },
-    { label: "Settings", path: "/settings" },
+    { label: "Dashboard", path: "/", icon: <DashboardIcon /> },
+    { label: "Students", path: "/students", icon: <PeopleIcon /> },
+    { label: "Courses", path: "/courses", icon: <BookIcon /> },
+    { label: "Enrollments", path: "/enrollments", icon: <AssignmentIcon /> },
+    { label: "Reports", path: "/reports", icon: <BarChartIcon /> },
+    { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
   ];
+
+  if (!user || loading) {
+    return <LoadingSpinner />;
+  }
 
   const drawer = (
     <Box sx={{ width: drawerWidth }}>
@@ -69,14 +66,18 @@ export default function Dashboard({ username }) {
         {navLinks.map((link) => (
           <ListItem key={link.path} disablePadding>
             <ListItemButton component={Link} to={link.path}>
+              <ListItemIcon>{link.icon}</ListItemIcon>
               <ListItemText primary={link.label} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
       <Divider />
-      <ListItem disablePadding>
+      <ListItem disablePadding onClick={() => { logout(); navigate("/login"); }}>   {/*Question*/}
         <ListItemButton component={Link} to="/logout">
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
           <ListItemText primary="Logout" />
         </ListItemButton>
       </ListItem>
@@ -86,7 +87,6 @@ export default function Dashboard({ username }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      {/* Top Navbar */}
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <IconButton
@@ -100,11 +100,10 @@ export default function Dashboard({ username }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Student Dashboard
           </Typography>
-          <Typography variant="body1">{username}</Typography>
+          <Typography variant="h6">{user?.name}</Typography>
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar Drawer */}
       <Box
         component="nav"
         sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
@@ -126,7 +125,7 @@ export default function Dashboard({ username }) {
           variant="permanent"
           sx={{
             display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
           }}
           open
         >
@@ -140,7 +139,7 @@ export default function Dashboard({ username }) {
         sx={{
           width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
           mt: 8,
-          
+          p: 2,
         }}
       >
         <Outlet />

@@ -1,27 +1,32 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css'
-import Login from './pages/login';
+import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
-import Dashboard from './pages/dashboard';
-import Students from './pages/students';
-import Courses from './pages/courses';
-import Enrollments from './pages/enrollments';
-import Reports from './pages/reports';
-import Settings from './pages/settings';
-function App() {
+import Dashboard from './pages/Dashboard';
+import Students from './pages/Students';
+import Courses from './pages/Courses';
+import Enrollments from './pages/Enrollments';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
+import { darkTheme } from './theme';
+import { ThemeProvider } from '@emotion/react';
+const App = () => {
+  const theme =  darkTheme;
   const IsLoggedIn = true;
   return (
-    <Routes>
-      <Route element={<ProtectedRoute />}>
-        <Route path='/' element={<Dashboard />} />
-        <Route path='/students' element={<Students />} />
-        <Route path='/courses' element={<Courses />} />
+    <ThemeProvider theme={theme}>
+      <Routes>
+        <Route element={<ProtectedRoute />}>
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/students' element={<Students />} />
+          <Route path='/courses' element={<Courses />} />
         <Route path='/enrollments' element={<Enrollments />} />
         <Route path='/reports' element={<Reports />} />
         <Route path='/settings' element={<Settings />} />
       </Route>
       <Route path="/login" element={<Login />} />
     </Routes>
+    </ThemeProvider>
   )
 }
 

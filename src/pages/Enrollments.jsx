@@ -1,4 +1,4 @@
-function Enrollments() {
+const Enrollments = () => {
     return (
         <div>
             <h1>Enrollments</h1>

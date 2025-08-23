@@ -1,4 +1,4 @@
-function Student() {
+const Student = () => {
     return (
         <div>
             <h1>Student</h1>

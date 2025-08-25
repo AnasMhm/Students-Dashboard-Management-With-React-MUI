@@ -10,15 +10,17 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import { ThemeProvider } from '@emotion/react';
 import { useThemeContext } from './contexts/ThemeContext';
+import Student from './pages/Student';
 const App = () => {
-  const { mode } = useThemeContext()
-  const theme = mode
+  const { mode } = useThemeContext();
+  const theme = mode;
   return (
     <ThemeProvider theme={{ theme }}>
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path='/' element={<Dashboard />} />
           <Route path='/students' element={<Students />} />
+          <Route path='/students/:id' element={<Student />} />
           <Route path='/courses' element={<Courses />} />
           <Route path='/enrollments' element={<Enrollments />} />
           <Route path='/reports' element={<Reports />} />

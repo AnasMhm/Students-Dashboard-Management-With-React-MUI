@@ -25,36 +25,39 @@ const common = {
   },
 };
 
-export const lightTheme = createTheme({
-  ...common,
-  palette: {
-    mode: "light",
-    primary: { main: "#1976d2" },    // Academic Blue
-    secondary: { main: "#f57c00" },  // Orange for highlights
-    background: {
-      default: "#f9fafb",            // Page background
-      paper: "#ffffff",              // Cards, tables, charts
+export const lightTheme = (primaryColor = "#1976d2", secondaryColor = "#f57c00") =>
+  createTheme({
+    ...common,
+    palette: {
+      mode: "light",
+      primary: { main: primaryColor },
+      secondary: { main: secondaryColor },
+      background: {
+        default: "#f9fafb",
+        paper: "#ffffff",
+      },
+      text: {
+        primary: "#1e293b",
+        secondary: "#475569",
+      },
     },
-    text: {
-      primary: "#1e293b",            // Dark slate (headings)
-      secondary: "#475569",          // Cool gray (subtext)
-    },
-  },
-});
+  });
 
-export const darkTheme = createTheme({
-  ...common,
-  palette: {
-    mode: "dark",
-    primary: { main: "#90caf9" },
-    secondary: { main: "#ffb74d" },
-    background: {
-      default: "#121212",
-      paper: "#1e1e1e",
+export const darkTheme = (primaryColor = "#90caf9", secondaryColor = "#ffb74d") =>
+  createTheme({
+    ...common,
+    palette: {
+      mode: "dark",
+      primary: { main: primaryColor },
+      secondary: { main: secondaryColor },
+      background: {
+        default: "#121212",
+        paper: "#1e1e1e",
+      },
+      text: {
+        primary: "#f5f5f5",
+        secondary: "#cbd5e1",
+      },
     },
-    text: {
-      primary: "#f5f5f5",
-      secondary: "#cbd5e1",
-    },
-  },
-});
+  });
+

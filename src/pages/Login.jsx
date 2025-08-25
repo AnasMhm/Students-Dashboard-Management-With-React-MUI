@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-  Paper,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-} from "@mui/material";
+import { Box } from "@mui/material";
+import { Button } from "@mui/material";
+import { Container } from "@mui/material";
+import { TextField } from "@mui/material";
+import { Typography } from "@mui/material";
+import { Paper } from "@mui/material";
+import { FormControlLabel } from "@mui/material";
+import { RadioGroup } from "@mui/material";
+import { Radio } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useAuth } from "../contexts/AuthContext";
@@ -108,7 +107,7 @@ const Login = () => {
               row
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              sx={{ mb: 3, justifyContent: "center" }}
+              sx={{ mb: 3, justifyContent: "center", flexDirection: { xs: "column", sm: "row" }, alignItems:"center"}}
             >
               <FormControlLabel value="Admin" control={<Radio />} label="Admin" />
               <FormControlLabel value="Instructor" control={<Radio />} label="Instructor" />
@@ -125,6 +124,7 @@ const Login = () => {
                 borderRadius: 2,
                 bgcolor: "primary.main",
                 "&:hover": { bgcolor: "secondary.main" },
+                
               }}
             >
               Login

@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { removeItemFromStorage, setItemInStorage } from "../lib/storage";
 
 
 const authContext = createContext();
@@ -19,12 +20,13 @@ const AuthProvider = ({ children }) => {
     const login = (username, userRole) => {
         const newUser = { name: username, role: userRole };
         setUser(newUser);
-        localStorage.setItem("user", JSON.stringify(newUser));
+        // localStorage.setItem("user", JSON.stringify(newUser));
+        setItemInStorage("user", newUser)
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem("user");
+        removeItemFromStorage("user");
     };
 
     const value = {

@@ -73,7 +73,7 @@ export default function Dashboard() {
         ))}
       </List>
       <Divider />
-      <ListItem disablePadding onClick={() => { logout(); navigate("/login"); }}>   {/*Question*/}
+      <ListItem disablePadding onClick={() => { logout(); navigate("/login"); }}> 
         <ListItemButton component={Link} to="/logout">
           <ListItemIcon>
             <LogoutIcon />
@@ -125,7 +125,7 @@ export default function Dashboard() {
           variant="permanent"
           sx={{
             display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth, overflowX: "hidden" },
           }}
           open
         >

@@ -9,8 +9,8 @@ const LoadingSpinner = () => {
         height: "100vh",
       }}
     >
-      <CircularProgress size={100} thickness={4} color="secondary" />
-    </Box>
+        <CircularProgress size={100} thickness={20} color="primary" />
+      </Box>
   )
 }
 export default LoadingSpinner;

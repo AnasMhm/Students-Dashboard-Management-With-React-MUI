@@ -1,61 +1,38 @@
-import * as React from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import TextField from "@mui/material/TextField";
-import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import ConfirmDialog from "../components/ConfirmDialog";
 
-// Generate mock students
-const generateStudents = (count) => {
-  const students = [];
-  for (let i = 1; i <= count; i++) {
-    students.push({
-      id: `stu_${String(i).padStart(3, "0")}`,
-      name: `Student ${i}`,
-      email: `student${i}@example.com`,
-      phone: `05${Math.floor(10000000 + Math.random() * 89999999)}`,
-    });
-  }
-  return students;
-};
+import MUIDataGrid from "../components/MUIDataGrid";
+import MUIDialog from "../components/MUIDialog";
+import ConfirmDialog from "../components/ConfirmDialog";
+import MUITextField from "../components/MUITextField";
+import { getStudents } from "../lib/seed";
+import { setItemInStorage } from "../lib/storage";
+import { useNavigate } from "react-router-dom";
 
 const Students = () => {
-  const [pageSize, setPageSize] = React.useState(5);
-  const [students, setStudents] = React.useState(() => generateStudents(100));
+  const [students, setStudents] = useState(getStudents());
 
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [editingStudent, setEditingStudent] = React.useState(null);
-  const [form, setForm] = React.useState({ name: "", email: "", phone: "" });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "" });
 
-  const [confirm, setConfirm] = React.useState({
-    open: false,
-    title: "",
-    message: "",
-    onConfirm: null,
-  });
-
-  const handleOpenDialog = (student = null) => {
+  const [confirm, setConfirm] = useState({ open: false, title: "", message: "", onConfirm: null });
+  const navigate = useNavigate();
+; const handleOpenDialog = (student = null) => {
     setEditingStudent(student);
-    setForm(
-      student
-        ? { name: student.name, email: student.email, phone: student.phone }
-        : { name: "", email: "", phone: "" }
-    );
-    setOpenDialog(true);
+    setForm(student ? { ...student } : { firstName: "", lastName: "", email: "", phone: "" });
+    setDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
+    setDialogOpen(false);
     setEditingStudent(null);
   };
 
@@ -64,24 +41,20 @@ const Students = () => {
       setConfirm({
         open: true,
         title: "Confirm Update",
-        message: `Are you sure you want to update ${editingStudent.name}?`,
+        message: `Are you sure you want to update ${editingStudent.firstName} ${editingStudent.lastName} ?`,
         onConfirm: () => {
-          setStudents((prev) =>
-            prev.map((s) =>
-              s.id === editingStudent.id ? { ...s, ...form } : s
-            )
-          );
+          const updatedStudents = students.map((s) => (s.id === editingStudent.id ? { ...s, ...form } : s));
+          setStudents(updatedStudents);
+          setItemInStorage("students", updatedStudents);
           handleCloseDialog();
           setConfirm({ ...confirm, open: false });
         },
       });
     } else {
-      const newStudent = {
-        id: `stu_${String(students.length + 1).padStart(3, "0")}`,
-        ...form,
-        createdAt: new Date().toISOString(),
-      };
-      setStudents((prev) => [...prev, newStudent]);
+      const newStudent = { id: `stu_${String(students.length + 1).padStart(3, "0")}`, ...form };
+      const updatedStudents = [...students, newStudent];
+      setStudents(updatedStudents);
+      setItemInStorage("students", updatedStudents);
       handleCloseDialog();
     }
   };
@@ -90,28 +63,31 @@ const Students = () => {
     setConfirm({
       open: true,
       title: "Confirm Delete",
-      message: `Are you sure you want to delete ${student.name}?`,
+      message: `Are you sure you want to delete ${student.FirstName} ${student.LastName} ?`,
       onConfirm: () => {
-        setStudents((prev) => prev.filter((s) => s.id !== student.id));
+        const updatedStudents = students.filter((s) => s.id !== student.id);
+        setStudents(updatedStudents);
+        setItemInStorage("students", updatedStudents);
         setConfirm({ ...confirm, open: false });
       },
     });
   };
-
   const columns = [
-    { field: "name", headerName: "Name", flex: 1 },
-    { field: "email", headerName: "Email", flex:1.5 },
+    { field: "firstName", headerName: "First Name", flex: 0.8 },
+    { field: "lastName", headerName: "Last Name", flex: 0.7 },
+    { field: "email", headerName: "Email", flex: 1.5 },
     { field: "phone", headerName: "Phone", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
+      flexGrow: 0,
       renderCell: (params) => (
         <>
-          <IconButton color="primary" onClick={() => handleOpenDialog(params.row)}>
+          <IconButton color="primary" onClick={(e) => {handleOpenDialog(params.row); e.stopPropagation();}}>
             <EditIcon />
           </IconButton>
-          <IconButton color="error" onClick={() => handleDelete(params.row)}>
+          <IconButton color="error" onClick={(e) => {handleDelete(params.row); e.stopPropagation();}}>
             <DeleteIcon />
           </IconButton>
         </>
@@ -121,7 +97,6 @@ const Students = () => {
 
   return (
     <Box sx={{ mt: 4, p: { xs: 1, md: 3 }, width: "100%" }}>
-      {/* Header + Add Button */}
       <Box
         sx={{
           display: "flex",
@@ -133,76 +108,46 @@ const Students = () => {
         }}
       >
         <Typography variant="h6" fontWeight="bold">
-          New Students
+          Students
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-        >
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()}>
           Add Student
         </Button>
       </Box>
 
-      {/* Scrollable DataGrid */}
       <Paper sx={{ borderRadius: 3, overflowX: "auto" }}>
-        <Box>
-          <DataGrid
-            rows={students}
-            columns={columns}
-            pagination
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5 } },
-            }}
-            pageSizeOptions={[5, 10, 25, 50, 100]}
-            onPaginationModelChange={(model) => setPageSize(model.pageSize)}
-            disableRowSelectionOnClick
-            sx={{
-              border: "none",
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: "primary.main",
-                fontWeight: "bold",
-              },
-              overflowX: "auto",
-              height: pageSize > 10 ? 400 : null,
-              minWidth: 510
-            }}
-          />
-        </Box>
+        <MUIDataGrid rows={students} columns={columns} onRowClick={(params) => navigate(`/students/${params.row.id}`)} />
       </Paper>
 
-      {/* Dialog for Create / Update */}
-      <Dialog fullWidth maxWidth="sm" open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{editingStudent ? "Edit Student" : "Add Student"}</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-          <TextField
-            label="Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            fullWidth
-          />
-          <TextField
-            label="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            fullWidth
-          />
-          <TextField
-            label="Phone"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>
-            {editingStudent ? "Update" : "Create"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <MUIDialog
+        open={dialogOpen}
+        title={editingStudent ? "Edit Student" : "Add Student"}
+        onClose={handleCloseDialog}
+        onSave={handleSave}
+        saveText={editingStudent ? "Update" : "Create"}
+      >
+        <MUITextField
+          label="First Name"
+          value={form.firstName}
+          onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+        />
+        <MUITextField
+          label="Last Name"
+          value={form.lastName}
+          onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+        />
+        <MUITextField
+          label="Email"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+        <MUITextField
+          label="Phone"
+          value={form.phone}
+          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+        />
+      </MUIDialog>
 
-      {/* Confirm Dialog */}
       <ConfirmDialog
         open={confirm.open}
         title={confirm.title}
@@ -213,5 +158,4 @@ const Students = () => {
     </Box>
   );
 };
-
 export default Students;

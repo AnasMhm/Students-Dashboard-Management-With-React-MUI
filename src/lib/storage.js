@@ -1,18 +1,40 @@
-export function login(username, role) {
-    localStorage.setItem('user', JSON.stringify({ username, role }));
-    localStorage.setItem('isLoggedIn', 'true');
+// Simple wrapper around localStorage
+
+const setItemInStorage = (key, value) => {
+    try {
+        const val = typeof value === "object" ? JSON.stringify(value) : value;
+        localStorage.setItem(key, val);
+    } catch (error) {
+        console.error("Error setting item in localStorage:", error);
+    }
+};
+
+const getItemFromStorage = (key) => {
+    try {
+        const item = localStorage.getItem(key);
+        if (!item) return null;
+
+        try {
+            return JSON.parse(item);
+        } catch {
+            return item;
+        }
+    } catch (error) {
+        console.error("Error getting item from localStorage:", error);
+        return null;
+    }
 }
 
-export function logout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('isLoggedIn');
-}
+const removeItemFromStorage = (key) => {
+    try {
+        localStorage.removeItem(key);
+    } catch (error) {
+        console.error("Error removing item from localStorage:", error);
+    }
+};
 
-export function isLoggedIn() {
-    return localStorage.getItem('isLoggedIn') === 'true';
-}
-
-export function getUser() {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-}
+export {
+    setItemInStorage,
+    getItemFromStorage,
+    removeItemFromStorage,
+};

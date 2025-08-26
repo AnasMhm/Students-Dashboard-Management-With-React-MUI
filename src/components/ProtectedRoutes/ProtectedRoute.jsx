@@ -21,8 +21,8 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import LoadingSpinner from "./LoadingSpinner";
+import { useAuth } from "../../contexts/AuthContext";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 const drawerWidth = 250;
 
@@ -30,7 +30,6 @@ export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
-
   useEffect(() => {
     if (!loading && !user) {
       navigate("/login");
@@ -40,15 +39,19 @@ export default function Dashboard() {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  let navLinks = [];
+  if (user?.role === "Admin") {
+    navLinks.push(
+      { label: "Dashboard", path: "/", icon: <DashboardIcon /> },
+      { label: "Students", path: "/students", icon: <PeopleIcon /> },
+      { label: "Reports", path: "/reports", icon: <BarChartIcon /> },
 
-  const navLinks = [
-    { label: "Dashboard", path: "/", icon: <DashboardIcon /> },
-    { label: "Students", path: "/students", icon: <PeopleIcon /> },
+    );
+  }
+  navLinks.push(
     { label: "Courses", path: "/courses", icon: <BookIcon /> },
     { label: "Enrollments", path: "/enrollments", icon: <AssignmentIcon /> },
-    { label: "Reports", path: "/reports", icon: <BarChartIcon /> },
-    { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
-  ];
+    { label: "Settings", path: "/settings", icon: <SettingsIcon /> })
 
   if (!user || loading) {
     return <LoadingSpinner />;
@@ -73,7 +76,7 @@ export default function Dashboard() {
         ))}
       </List>
       <Divider />
-      <ListItem disablePadding onClick={() => { logout(); navigate("/login"); }}> 
+      <ListItem disablePadding onClick={() => { logout(); navigate("/login"); }}>
         <ListItemButton component={Link} to="/logout">
           <ListItemIcon>
             <LogoutIcon />
@@ -83,7 +86,6 @@ export default function Dashboard() {
       </ListItem>
     </Box>
   );
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -100,7 +102,7 @@ export default function Dashboard() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Student Dashboard
           </Typography>
-          <Typography variant="h6">{user?.name}</Typography>
+          <Typography variant="h6">{user?.firstName}</Typography>
         </Toolbar>
       </AppBar>
 

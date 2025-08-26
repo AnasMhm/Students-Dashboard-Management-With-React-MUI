@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 
@@ -6,7 +6,7 @@ export default function MUIDataGrid({ rows, columns, ...props }) {
     const [pageSize, setPageSize] = useState(5);
 
     return (
-        <Paper sx={{ borderRadius: 3, overflowX: "auto" }}>
+        <Paper sx={{ borderRadius: 3, overflowX: "auto", cursor: "pointer" }}>
             <DataGrid
                 rows={rows}
                 columns={columns}

@@ -52,7 +52,7 @@ export const darkTheme = (primaryColor = "#90caf9", secondaryColor = "#ffb74d") 
       secondary: { main: secondaryColor },
       background: {
         default: "#121212",
-        paper: "#1e1e1e",
+        paper: "#161414ff",
       },
       text: {
         primary: "#f5f5f5",

@@ -1,5 +1,10 @@
 import { Formik, Form } from "formik";
-import { FormControl, InputLabel, Select, MenuItem, Button, Typography } from "@mui/material";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 const EnrollmentForm = ({ availableStudents, enrollmentSchema, onEnroll }) => {
     return (

@@ -8,11 +8,11 @@ import { setItemInStorage } from "../../lib/storage";
 import { useEffect, useState } from "react";
 import { getEnrollments } from "../../lib/seed";
 import ConfirmDialog from "../common/ConfirmDialog";
-
+import LoadingSpinner from "../common/LoadingSpinner";
 const CourseAccordion = ({ courses, setCourses, expandedId, handleAccordionChange, handleOpenDialog, showToast }) => {
     const [confirm, setConfirm] = useState({ open: false, title: "", message: "", onConfirm: null });
     const [enrollments, setEnrollments] = useState([]);
-    const { user: { role, id } } = useAuth();
+    const { user: { role, id, loading } } = useAuth();
     useEffect(() => {
         setEnrollments(getEnrollments());
     }, []);
@@ -43,7 +43,9 @@ const CourseAccordion = ({ courses, setCourses, expandedId, handleAccordionChang
             },
         });
     };
-
+    if (loading) {
+        return <LoadingSpinner />;
+    }
     return (
         <>
             <Paper sx={{ borderRadius: 3, overflow: "hidden" }}>
@@ -70,7 +72,7 @@ const CourseAccordion = ({ courses, setCourses, expandedId, handleAccordionChang
                                 )}
 
                                 {role === "Student" &&
-                                    (enrollments.some((e) => e.studentId === id && e.courseId === course.id) ? (
+                                    (enrollments.find((e) => e.studentId === id && e.courseId === course.id) ? (
                                         <Button variant="outlined" disabled>Enrolled</Button>
                                     ) : (
                                         <Button variant="contained" color="primary" startIcon={<HowToReg />} onClick={() => handleEnroll(course.id)}>

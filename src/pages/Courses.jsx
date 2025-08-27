@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../contexts/AuthContext";
 import { setItemInStorage } from "../lib/storage";
@@ -6,8 +6,9 @@ import PageHeader from "../components/common/PageHeader";
 import ContainerBox from "../components/common/ContainerBox";
 import CourseAccordion from "../components/courses/CourseAccordion";
 import CourseForm from "../components/courses/CoursesForm";
-import MUISnackbar from "../components/common/MUISnackbar";
+const MUISnackbar = lazy(() => import("../components/common/MUISnackbar"));
 import { getCourses } from "../lib/seed";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const Courses = () => {
     const [courses, setCourses] = useState([]);
@@ -73,10 +74,12 @@ const Courses = () => {
                 handleCloseDialog={handleCloseDialog}
                 handleSave={handleSave}
             />
-            <MUISnackbar
-                toast={toast}
-                setToast={setToast}
-            />
+            <Suspense fallback={<LoadingSpinner />}>
+                <MUISnackbar
+                    toast={toast}
+                    setToast={setToast}
+                />
+            </Suspense>
         </ContainerBox>
     );
 };

@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Box } from "@mui/material";
 import { getStudents, getEnrollments } from "../lib/seed";
 import { setItemInStorage } from "../lib/storage";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/common/PageHeader";
-import ConfirmDialog from "../components/common/ConfirmDialog";
-import MUISnackbar from "../components/common/MUISnackbar";
 import StudentFormDialog from "../components/students/StudentFormDialog";
 import StudentsTable from "../components/students/StudentsTable";
 import AddIcon from "@mui/icons-material/Add";
+import LoadingSpinner from "../components/common/LoadingSpinner";
+
+const ConfirmDialog = lazy(() => import("../components/common/ConfirmDialog"));
+const MUISnackbar = lazy(() => import("../components/common/MUISnackbar"));
 
 const StudentsPage = () => {
   const [students, setStudents] = useState(getStudents());
@@ -97,16 +99,17 @@ const StudentsPage = () => {
         title={editingStudent ? "Edit Student" : "Add Student"}
         saveText={editingStudent ? "Update" : "Create"}
       />
+      <Suspense fallback={<LoadingSpinner />}>
+        <ConfirmDialog
+          open={confirm.open}
+          title={confirm.title}
+          message={confirm.message}
+          onConfirm={confirm.onConfirm}
+          onCancel={() => setConfirm({ ...confirm, open: false })}
+        />
 
-      <ConfirmDialog
-        open={confirm.open}
-        title={confirm.title}
-        message={confirm.message}
-        onConfirm={confirm.onConfirm}
-        onCancel={() => setConfirm({ ...confirm, open: false })}
-      />
-
-      <MUISnackbar toast={toast} setToast={setToast} />
+        <MUISnackbar toast={toast} setToast={setToast} />
+      </Suspense>
     </Box>
   );
 };
